@@ -21,6 +21,7 @@ The defining feature of this lab. By holding down on the screen (mouse or touch)
 Powered by Google's `<model-viewer>`, the character is fully interactive:
 - **State-Driven Animation:** Seamlessly transitions between `Initial Hi`, `Idle Dancing`, `Stunned`, and `Recovery` based on user velocity.
 - **Parallax Physics:** The character's gaze and rotation react to mouse positions, creating a tactile holographic presence.
+- **Creation Origin:** The character was generated using **Rodin AI**, rigged with **Adobe Mixamo**, and converted to GLB format using **Adobe Converter**.
 
 ### 📼 Retro TV Aesthetics & Glitch Logic
 - **80s Static Entry:** A high-distortion, low-res noise system provides an authentic "TV boot" transition.

@@ -1,0 +1,647 @@
+:root {
+  --neon-pink: #f687b3;
+  --neon-cyan: #4fd1c5;
+  --neon-purple: #b794f4;
+  --text-col: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Share Tech Mono', monospace;
+  background-color: #000000;
+  color: var(--text-col);
+  overflow: hidden; /* Hide scrollbars */
+  user-select: none;
+}
+
+/* 3D Starfield Canvas */
+#starfield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1; /* Lowest layer */
+  pointer-events: none; /* Let clicks pass through */
+}
+
+/* UI Layer */
+.ui-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  pointer-events: none;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.top-left { position: absolute; top: 40px; left: 40px; pointer-events: auto; }
+.top-right { position: absolute; top: 40px; right: 40px; pointer-events: auto; }
+.bottom-left { position: absolute; bottom: 40px; left: 40px; pointer-events: auto; }
+.bottom-right { position: absolute; bottom: 40px; right: 40px; pointer-events: auto; }
+
+strong { color: var(--text-col); font-weight: bold; }
+#speed-display { color: var(--neon-cyan); }
+
+/* Art Container (Center of screen) */
+#art-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* Container is passthrough, SVG elements can capture pointer if needed */
+}
+
+#art-rotator {
+  width: 900px;
+  height: 900px;
+  transform-style: preserve-3d;
+  transition: transform 0.1s;
+  pointer-events: auto; /* Enable hover on SVG */
+}
+
+#main-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+}
+
+/* Text on curve (SLOW DOWN YOU CRAZY) */
+.speed-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 32px;
+  font-weight: bold;
+  fill: #fff;
+  opacity: 0;
+  text-shadow: 2px 2px 0px var(--neon-purple), -2px -2px 0px var(--neon-cyan);
+}
+
+/* 3D Model Styling & Effects */
+#model-layers {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.model-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  pointer-events: none;
+  outline: none;
+  cursor: grab;
+  filter: drop-shadow(0 0 30px rgba(0,0,0,0.8));
+  transform: scale(0.85);
+}
+
+.model-layer.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.model-layer::part(canvas) {
+  filter: brightness(1.1) contrast(1.1);
+}
+
+
+#main-model:active {
+  cursor: grabbing;
+}
+
+.model-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 24px;
+  color: var(--neon-cyan);
+}
+
+#text-overlay-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Let clicks pass to model */
+}
+
+/* Facial Feature Overlays (2D elements layered on 3D) */
+#girl-face-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.face-layer {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: opacity 0.1s;
+}
+
+/* Girl interactions */
+#girl {
+  transform: translate(160px, -20px); /* Positioning her standing on the hand base/thumb */
+}
+
+/* Composition Wrapper for Glitch & Scaling */
+#composition {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+#composition.glitch {
+  animation: rgbShift 0.2s infinite;
+}
+
+@keyframes rgbShift {
+  0% { filter: drop-shadow(6px 0 0 rgba(255,0,0,0.5)) drop-shadow(-6px 0 0 rgba(0,255,255,0.5)); }
+  33% { filter: drop-shadow(-6px 0 0 rgba(255,0,0,0.5)) drop-shadow(6px 0 0 rgba(0,255,255,0.5)); }
+  66% { filter: drop-shadow(0 6px 0 rgba(255,0,0,0.5)) drop-shadow(0 -6px 0 rgba(0,255,255,0.5)); }
+  100% { filter: drop-shadow(0 -6px 0 rgba(255,0,0,0.5)) drop-shadow(0 6px 0 rgba(0,255,255,0.5)); }
+}
+
+.loader-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 18px;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Speech Bubble styles for Dialogue - Matching Slow Down UI */
+#speech-bubble {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+  pointer-events: none;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 32px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 2px 2px 0px var(--neon-purple), -2px -2px 0px var(--neon-cyan);
+  width: 500px;
+  text-align: center;
+  line-height: 1.2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.word {
+  display: inline-block;
+  margin-right: 0.3em;
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(5px);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: miniGlitch 0.2s infinite;
+  animation-play-state: paused;
+}
+
+.word.visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  animation-play-state: running;
+}
+
+@keyframes miniGlitch {
+  0% { transform: translate(0); }
+  25% { transform: translate(1px, -1px); opacity: 0.8; }
+  50% { transform: translate(-1px, 1px); }
+  75% { transform: translate(1px, 1px); opacity: 0.9; }
+  100% { transform: translate(0); }
+}
+
+/* --- Entry Overlay Styling --- */
+#enter-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.5s ease;
+  overflow: hidden;
+}
+
+#tv-static {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.15; /* Base noise */
+  z-index: 1;
+  pointer-events: none;
+}
+
+.scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.2) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 3px 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.8) 120%);
+  pointer-events: none;
+  z-index: 6;
+}
+
+#enter-overlay.tv-distort {
+  animation: tv-flicker 0.1s infinite alternate, tv-glitch 0.3s infinite;
+}
+
+@keyframes tv-flicker {
+  0% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+@keyframes tv-glitch {
+  0% { transform: translate(0); filter: hue-rotate(0deg) contrast(1); }
+  10% { transform: translate(-2px, 1px); filter: hue-rotate(10deg) contrast(1.2); }
+  20% { transform: translate(2px, -1px); filter: hue-rotate(-10deg) contrast(1.1); }
+  30% { transform: translate(-1px, -2px); filter: hue-rotate(20deg) contrast(1.3); }
+  40% { transform: translate(1px, 2px); filter: hue-rotate(-20deg) contrast(1.2); }
+  50% { transform: translate(0, 0); filter: hue-rotate(0deg) contrast(1); }
+}
+
+#enter-overlay.revealing {
+  transition: transform 0.2s ease-in, opacity 0.3s ease-out;
+  transform: scaleY(0.01) scaleX(0); /* TV shut off look */
+  opacity: 0;
+  pointer-events: none;
+}
+
+.enter-content {
+  text-align: center;
+}
+
+.glitch-wrapper {
+  margin-bottom: 20px;
+}
+
+.glitch-text {
+  font-size: 64px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 10px;
+  position: relative;
+  text-transform: uppercase;
+  animation: glitch-skew 1s infinite linear alternate-reverse;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.glitch-text::before {
+  color: var(--neon-cyan);
+  z-index: -1;
+  animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  color: var(--neon-pink);
+  z-index: -2;
+  animation: glitch-anim2 3s infinite linear alternate-reverse;
+}
+
+.enter-status {
+  font-size: 14px;
+  color: var(--neon-cyan);
+  letter-spacing: 4px;
+  opacity: 0.6;
+  animation: blink 2s infinite;
+}
+
+@keyframes glitch-anim {
+  0% { clip: rect(10px, 9999px, 80px, 0); transform: skew(0.5deg); }
+  20% { clip: rect(40px, 9999px, 50px, 0); transform: skew(0.2deg); }
+  40% { clip: rect(70px, 9999px, 20px, 0); transform: skew(0.8deg); }
+  60% { clip: rect(20px, 9999px, 90px, 0); transform: skew(0.1deg); }
+  80% { clip: rect(90px, 9999px, 10px, 0); transform: skew(0.4deg); }
+  100% { clip: rect(10px, 9999px, 60px, 0); transform: skew(0.6deg); }
+}
+
+@keyframes glitch-anim2 {
+  0% { clip: rect(40px, 9999px, 60px, 0); transform: skew(0.3deg); }
+  20% { clip: rect(20px, 9999px, 40px, 0); transform: skew(0.7deg); }
+  40% { clip: rect(10px, 9999px, 80px, 0); transform: skew(0.2deg); }
+  60% { clip: rect(70px, 9999px, 20px, 0); transform: skew(0.5deg); }
+  80% { clip: rect(30px, 9999px, 90px, 0); transform: skew(0.4deg); }
+  100% { clip: rect(10px, 9999px, 50px, 0); transform: skew(0.8deg); }
+}
+
+@keyframes glitch-skew {
+  0% { transform: skew(1deg); }
+  10% { transform: skew(-1deg); }
+  20% { transform: skew(2deg) rotate(1deg); }
+  30% { transform: skew(-2deg); }
+  40% { transform: skew(3deg); }
+  50% { transform: skew(-3deg) rotate(-1deg); }
+  60% { transform: skew(1deg); }
+  70% { transform: skew(-1deg); }
+  80% { transform: skew(0.5deg); }
+  90% { transform: skew(-0.5deg); }
+  100% { transform: skew(0deg); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.8; }
+}
+
+/* --- Hologram Modal Styling --- */
+#hologram-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Allow natural scroll from top */
+  padding: 60px 0;
+  background: rgba(0, 10, 20, 0.7);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s;
+  visibility: visible;
+  opacity: 1;
+  overflow-y: auto; /* Enable scroll on the backdrop layer */
+  pointer-events: auto;
+}
+
+#hologram-modal.hologram-hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.hologram-frame {
+  width: 800px;
+  max-width: 90vw;
+  flex-shrink: 0; /* Don't squash the frame */
+  background: rgba(0, 30, 60, 0.4);
+  border: 2px solid #00fbff;
+  padding: 40px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 251, 255, 0.4), inset 0 0 20px rgba(0, 251, 255, 0.2);
+  transform: perspective(1000px) rotateX(10deg);
+  animation: holo-flicker 3s infinite, holo-float 6s infinite ease-in-out;
+  color: #00fbff;
+  text-shadow: 0 0 5px rgba(0, 251, 255, 0.8);
+  margin-bottom: 60px; /* Space at bottom for float */
+}
+
+.hologram-frame::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    transparent 0%,
+    rgba(0, 251, 255, 0.05) 0.5%,
+    transparent 1%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes holo-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 22%, 24%, 55% { opacity: 0.8; }
+}
+
+@keyframes holo-float {
+  0%, 100% { transform: perspective(1000px) rotateX(10deg) translateY(0); }
+  50% { transform: perspective(1000px) rotateX(12deg) translateY(-20px); }
+}
+
+.hologram-header {
+  font-size: 16px;
+  font-weight: bold;
+  border-bottom: 2px solid #00fbff;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+.hologram-subject {
+  font-size: 38px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+/* Glitch Effect for Name */
+.glitch-name {
+  position: relative;
+  display: inline-block;
+  color: #fff;
+}
+
+.glitch-name::before,
+.glitch-name::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.glitch-name::before {
+  color: #ff00ff;
+  z-index: -1;
+  animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+.glitch-name::after {
+  color: #00fbff;
+  z-index: -2;
+  animation: glitch-anim2 3s infinite linear alternate-reverse;
+}
+
+.hologram-stat {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.highlight {
+  color: #fff;
+  font-weight: bold;
+}
+
+.hologram-section {
+  margin-top: 30px;
+  border: 1px solid rgba(0, 251, 255, 0.3);
+  padding: 15px;
+  background: rgba(0, 251, 255, 0.05);
+}
+
+.section-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #fff;
+}
+
+.section-content {
+  white-space: pre-wrap;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.hologram-intel {
+  margin-top: 30px;
+  font-size: 16px;
+  font-style: italic;
+  opacity: 0.9;
+  line-height: 1.4;
+  border-left: 3px solid #00fbff;
+  padding-left: 15px;
+}
+
+.hologram-quote {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 18px;
+  color: #fff;
+  font-style: italic;
+}
+
+.hologram-actions {
+  margin-top: 35px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.holo-btn {
+  background: transparent;
+  border: 1px solid #00fbff;
+  color: #00fbff;
+  padding: 10px 20px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.holo-btn:hover {
+  background: rgba(0, 251, 255, 0.2);
+  box-shadow: 0 0 10px #00fbff;
+}
+
+.hologram-close {
+  position: absolute;
+  top: -46px;
+  right: 0;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 6px 12px;
+  background: #00fbff;
+  color: #000;
+  transition: all 0.3s;
+}
+
+.hologram-close:hover {
+  background: #fff;
+  box-shadow: 0 0 15px #fff;
+}
+
+/* Hologram Custom Scrollbar */
+#hologram-modal::-webkit-scrollbar {
+  width: 8px;
+}
+#hologram-modal::-webkit-scrollbar-track {
+  background: rgba(0, 251, 255, 0.05);
+}
+#hologram-modal::-webkit-scrollbar-thumb {
+  background: rgba(0, 251, 255, 0.4);
+  border-radius: 10px;
+}
+#hologram-modal::-webkit-scrollbar-thumb:hover {
+  background: #00fbff;
+  box-shadow: 0 0 10px #00fbff;
+}
+
+/* End of style.css */

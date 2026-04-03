@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASTRO ROCK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+
+  <!-- Import Google's Model Viewer for rendering GLB files natively -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+</head>
+
+  <!-- Entry Overlay -->
+  <div id="enter-overlay">
+    <canvas id="tv-static"></canvas>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div class="enter-content">
+      <div class="glitch-wrapper">
+        <div class="glitch-text" data-text="CLICK ANYWHERE">CLICK ANYWHERE</div>
+      </div>
+      <div class="enter-status">SYSTEM IDLE // READY TO SYNC</div>
+    </div>
+  </div>
+
+  <!-- 3D Starfield Canvas for high speed warp -->
+  <canvas id="starfield"></canvas>
+
+  <!-- UI Overlay -->
+  <div class="ui-layer">
+    <div class="top-left">@dolly_s LAB | <strong id="learn-more-btn" style="cursor: pointer;">ABOUT ME</strong></div>
+    <div class="top-right">ASTRO ROCK</div>
+    <div class="bottom-left" id="time-display">00:00:000</div>
+    <div class="bottom-right">HOLD FOR SPEED | <span id="speed-display">1.00x</span></div>
+  </div>
+
+  <!-- Container for the 3D Model -->
+  <div id="art-container">
+    <div id="composition">
+      <div id="art-rotator">
+        <!-- New Speech Bubble for Girl's Dialogue -->
+        <div id="speech-bubble" class="speech-bubble"></div>
+
+        <!-- Multi-Layered Animation System for Smooth Cross-fading -->
+        <div id="model-layers">
+          <model-viewer id="model-hi" class="model-layer active" src="/hi.glb" shadow-intensity="1" camera-controls
+            disable-zoom interaction-prompt="none" exposure="1.4" tone-mapping="neutral"></model-viewer>
+          <model-viewer id="model-dancing" class="model-layer" src="/dancing.glb" shadow-intensity="1" camera-controls
+            disable-zoom interaction-prompt="none" exposure="1.4" tone-mapping="neutral"></model-viewer>
+          <model-viewer id="model-stunned" class="model-layer" src="/stunned.glb" shadow-intensity="1" camera-controls
+            disable-zoom interaction-prompt="none" exposure="1.4" tone-mapping="neutral"></model-viewer>
+          <model-viewer id="model-gettingUp" class="model-layer" src="/gettingUp.glb" shadow-intensity="1"
+            camera-controls disable-zoom interaction-prompt="none" exposure="1.4" tone-mapping="neutral"></model-viewer>
+        </div>
+
+
+
+        <!-- SVG overlay strictly for the crazy text animation -->
+        <svg viewBox="0 0 1000 1000" id="text-overlay-svg">
+          <defs>
+            <path id="text-curve" d="M -200 600 Q 500 500 1200 600" fill="none" />
+          </defs>
+          <text class="speed-text" id="crazy-text">
+            <textPath href="#text-curve" startOffset="100%" text-anchor="middle">
+              SLOW DOWN YOU CRAZY, SLOW DOWN YOU CRAZY, SLOW DOWN YOU CRAZY, SLOW DOWN YOU CRAZY, SLOW DOWN YOU CRAZY,
+              SLOW DOWN YOU CRAZY,
+            </textPath>
+          </text>
+        </svg>
+
+      </div>
+    </div>
+
+    <!-- Audio Assets -->
+    <audio id="audio-click" src="/audio/click anywhere sound.mp3" preload="auto"></audio>
+    <audio id="audio-intro" src="/audio/intro.mp3" preload="auto"></audio>
+    <audio id="audio-slowdown" src="/audio/slowdown.mp3" preload="auto"></audio>
+    <audio id="audio-rise" src="/audio/rise.mp3" preload="auto"></audio>
+    <audio id="audio-space" src="/audio/spacemusic.mp3" preload="auto"></audio>
+
+    <script type="module" src="/main.js"></script>
+
+    <!-- Star-Lord Inspired Hologram Modal -->
+    <div id="hologram-modal" class="hologram-hidden">
+      <div class="hologram-frame">
+        <div class="hologram-header">
+          [ TRANSMISSION RECEIVED: ACCESSING BIO-DATA... ]
+        </div>
+        <div class="hologram-body">
+          <div class="hologram-subject">
+            SUBJECT: <span class="glitch-name" data-text="Dolly Chauhan Rajput">Dolly Chauhan Rajput</span>
+          </div>
+          <div class="hologram-stat">
+            CLASSIFICATION: <span class="highlight">Elite AI-Enhanced Full-Stack Ravager</span>
+          </div>
+          <div class="hologram-stat">
+            MISSION STATUS: <span class="highlight">Graduation Incoming (B.Tech CSE) — ETA: 2026</span>
+          </div>
+          
+          <div class="hologram-section">
+            <div class="section-title">[ THE TECH ARSENAL: WEAPONRY & LOGIC ]</div>
+            <div class="section-content">
+CORE SYSTEMS: MERN Stack (React, Node.js, Express, MongoDB)  
+THE LEGACY ENGINES: PHP, Laravel, Codeigniter  
+DATA EXTRACTION: SQL Mastery (No database is hidden from her)  
+BACK-UP PROTOCOLS: Java
+            </div>
+          </div>
+
+          <div class="hologram-section">
+            <div class="section-title">[ THE AI ENHANCEMENTS: THE SECRET WEAPONS ]</div>
+            <div class="section-content">
+THE BRAIN: Python (The language of the gods)  
+THE MODEL HUB: Hugging Face (Accessing the universe's most powerful AI models)  
+THE VOICE: Whisper TTS (Giving the digital world a soul)
+            </div>
+          </div>
+
+          <div class="hologram-intel">
+            INTEL: Dolly doesn't just build websites; she’s building the next quadrant of the digital multiverse. From sleek front-end interfaces to deep AI-driven voice systems, she’s the one you call when the job is "impossible."
+          </div>
+
+          <div class="hologram-quote">
+            "I don't just write code. I create the 'Awesome Mix' of AI and Web Development. What made you come here? Stick around and see what’s next."
+          </div>
+
+          <div class="hologram-actions">
+            <a href="mailto:dollychauhan1204@gmail.com" class="holo-btn" style="text-decoration: none;">[ INITIATE CONTACT ]</a>
+          </div>
+        </div>
+        <div id="close-hologram" class="hologram-close">× CLOSE CONNECTION</div>
+      </div>
+    </div>
+</body>
+
+</html>

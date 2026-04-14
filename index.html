@@ -133,6 +133,65 @@ THE VOICE: Whisper TTS (Giving the digital world a soul)
         <div id="close-hologram" class="hologram-close">× CLOSE CONNECTION</div>
       </div>
     </div>
+
+  <!-- ====================================================
+       SCROLL SECTIONS (below the fixed first page)
+       ==================================================== -->
+
+  <!-- Spacer: gives the fixed first page its scroll real-estate -->
+  <div id="first-page-spacer"></div>
+
+  <!-- Earth Zoom Scroll Section -->
+  <section id="earth-scroll-section">
+    <div id="earth-sticky">
+
+      <!-- Canvas: drawn to by earth-scroll.js using image sequence.
+           Falls back to video scrubbing if frames aren't loaded yet. -->
+      <canvas id="earth-canvas"></canvas>
+
+      <!-- Hidden video — used as fallback if image frames aren't available -->
+      <video
+        id="earth-video"
+        src="/earth-zoom.mp4"
+        muted
+        playsinline
+        preload="auto"
+        style="display:none"
+      ></video>
+
+      <!-- HUD: top-left planet tag -->
+      <div id="planet-tag">
+        <div class="tag-label">// TARGET //</div>
+        <div class="tag-value">EARTH — SOL III</div>
+      </div>
+
+      <!-- HUD: top-right altitude -->
+      <div id="altitude-display">
+        <div class="alt-label">ALTITUDE</div>
+        <div class="alt-value" id="alt-value">35,786</div>
+        <div class="alt-unit">KM</div>
+      </div>
+
+      <!-- HUD: bottom scroll cue -->
+      <div id="earth-hud">
+        <div id="scroll-indicator">
+          <div class="scroll-label">Scroll to engage</div>
+          <div class="scroll-arrow"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Landing section revealed after earth zoom -->
+  <section id="landing-section">
+    <h2>WELCOME TO EARTH</h2>
+    <p>[ SECTOR SCAN COMPLETE — LIFE SIGNALS DETECTED ]</p>
+  </section>
+
+  <!-- Earth scroll script (isolated, no changes to main page) -->
+  <script src="/earth-scroll.js"></script>
+
 </body>
 
 </html>
